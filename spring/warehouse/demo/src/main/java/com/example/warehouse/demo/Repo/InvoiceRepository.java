@@ -1,5 +1,12 @@
 package com.example.warehouse.demo.Repo;
 
-public class InvoiceRepository {
-    
+import java.util.UUID;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.example.warehouse.demo.Model.Invoice;
+
+@Repository
+public interface InvoiceRepository extends JpaRepository<Invoice, UUID> {
 }
