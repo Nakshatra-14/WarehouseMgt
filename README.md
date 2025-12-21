@@ -114,18 +114,18 @@ The system is built with **Spring Boot (Java)** and uses **SQLite** for a lightw
 ---
 
 ## 📂 Project Structure
-src/main/java/com/example/warehouse/demo/ 
-├── Component/ 
-│ ├── AnalyticsController.java # Dashboard & Predictions 
-│ └── DataSeeder.java # Generates 500 fake records on startup 
-├── Controller/ 
-│ ├── ScanController.java # Image Upload & AI Handling 
-│ └── InvoiceController.java # Invoice Search & Download 
-├── Model/ │ ├── Scan.java # Database Table for Images 
-│ └── Invoice.java # Database Table for Bills 
-├── Repo/ 
-│ ├── ScanRepository.java # DB Access 
-│ └── InvoiceRepository.java # DB Access 
-├── Service/ 
-│ └── ScanService.java # Core Logic (AI, Files, Logic) 
-└── DemoApplication.java # Main Entry Point
+src/main/java/com/example/warehouse/demo/ <br>
+├── Component/ <br>
+│ ├── AnalyticsController.java # Dashboard & Predictions <br>
+│ └── DataSeeder.java # Generates 500 fake records on startup <br>
+├── Controller/ <br>
+│ ├── ScanController.java # Image Upload & AI Handling <br>
+│ └── InvoiceController.java # Invoice Search & Download <br>
+├── Model/ │ ├── Scan.java # Database Table for Images <br>
+│ └── Invoice.java # Database Table for Bills <br>
+├── Repo/ <br>
+│ ├── ScanRepository.java # DB Access <br>
+│ └── InvoiceRepository.java # DB Access <br>
+├── Service/ <br>
+│ └── ScanService.java # Core Logic (AI, Files, Logic) <br>
+└── DemoApplication.java # Main Entry Point <br>
