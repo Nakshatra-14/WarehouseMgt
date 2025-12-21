@@ -49,8 +49,8 @@ The system is built with **Spring Boot (Java)** and uses **SQLite** for a lightw
 ### Steps to Run
 1.  **Clone the Repository**
     ```bash
-    git clone [https://github.com/your-username/warehouse-backend.git](https://github.com/your-username/warehouse-backend.git)
-    cd warehouse-backend
+    git clone https://github.com/Nakshatra-14/WarehouseMgt.git
+    cd WarehouseMgt
     ```
 
 2.  **Run the Application**
