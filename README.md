@@ -1,86 +1,117 @@
-# Invoice & Analytics API
+# 📦 AI-Driven Warehouse Management System (Backend)
 
-A robust backend API designed to manage invoice processing, image scanning, and analytics visualization. This service handles the lifecycle of invoices from scanning to data visualization.
+## 📖 Overview
+This is the backend for a **Smart Warehouse Receiving System**. It automates the process of receiving inventory by analyzing box images for damage using AI, generating digital invoices, and providing predictive analytics for demand forecasting.
 
-## 📚 Table of Contents
-- [Features](#features)
-- [API Documentation](#api-documentation)
-  - [Invoices Management](#invoices-management)
-  - [Analytics & Dashboard](#analytics--dashboard)
-  - [Scan & Images](#scan--images)
-  - [System](#system)
-- [Installation](#installation)
-
-## ✨ Features
-* **Invoice Management:** Full CRUD capabilities for searching, listing, and downloading invoices.
-* **Smart Analytics:** Endpoints dedicated to providing data for graphs, pie charts, and future predictions.
-* **Image Processing:** Handle image uploads (scans) and serve static image files.
+The system is built with **Spring Boot (Java)** and uses **SQLite** for a lightweight, zero-configuration database. It simulates a real-world enterprise environment with real-time processing logs, professional HTML invoice generation, and a "Big Data" dashboard seeded with 500+ past records.
 
 ---
 
-## 🚀 API Documentation
+## 🚀 Key Features
 
-### Invoices Management
-*Search, List, and Download Invoices*
+### 1. 🔍 **AI Damage Detection**
+* **Upload:** Takes an image of a box via API.
+* **Analyze:** Sends the image to an external AI model to check for physical damage.
+* **Result:** Returns `APPROVED` (if normal) or `REJECTED` (if damaged).
+* **Real-Time Simulation:** Provides step-by-step processing logs for frontend animations.
 
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `GET` | `/api/invoices` | List all invoices available in the system. |
-| `GET` | `/api/invoices/search` | Search for specific invoices based on query parameters. |
-| `GET` | `/api/invoices/download/{id}` | Download a specific invoice as an HTML file. |
-| `DELETE` | `/api/invoices/{id}` | Permanently delete an invoice by its ID. |
+### 2. 🧾 **Smart Invoicing**
+* **Auto-Generation:** Automatically creates a commercial invoice with Vendor, PO Number, Weight, and Tracking ID.
+* **Format:** Generates a professional **HTML Invoice** that can be downloaded.
+* **Management:** APIs to Search, List, and Delete invoices.
 
-### Analytics & Dashboard
-*Data for Graphs, Pie Charts, and Predictions*
+### 3. 📊 **Predictive Analytics & Dashboard**
+* **Demand Forecasting:** Simulates AI prediction for upcoming festivals (e.g., "Big Billion Sale").
+* **Load Graph:** Provides data points to plot a 7-day load forecast graph.
+* **Inventory Health:** Identifies "Critical Shortage", "Low Stock", and "In Stock" items.
+* **Visuals:** API endpoints for Pie Charts (Vendor Share, Damaged vs. Normal).
 
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `GET` | `/api/analytics/dashboard` | Retrieve main dashboard statistics and summary data. |
-| `GET` | `/api/analytics/recent-activity` | Get a feed of the most recent system activities. |
-| `GET` | `/api/analytics/predict` | Fetch data points for prediction graphs. |
-| `GET` | `/api/analytics/pie-chart-data` | Retrieve data formatted for pie chart visualization. |
-
-### Scan & Images
-*Handle Image Uploads and Image Serving*
-
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `POST` | `/api/scan` | Upload a box image/scan for processing. |
-| `GET` | `/api/scans` | Retrieve a list of all performed scans. |
-| `GET` | `/api/images/{filename}` | View or serve a specific image file. |
-
-### System
-*Health Checks and Root*
-
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `GET` | `/` | Hello World / Health Check. |
+### 4. 🗄️ **Huge Data Simulation**
+* **Auto-Seeding:** On the first run, the system automatically fills the database with **500 fake historical records** to simulate a busy warehouse history.
 
 ---
 
-## 🛠 Installation
-
-1.  **Clone the repository**
-    ```bash
-    git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
-    ```
-
-2.  **Install dependencies**
-    ```bash
-    npm install
-    # or
-    pip install -r requirements.txt
-    ```
-
-3.  **Run the server**
-    ```bash
-    npm start
-    # or
-    python app.py
-    ```
+## 🛠️ Tech Stack
+* **Language:** Java 21
+* **Framework:** Spring Boot 3.x
+* **Database:** SQLite (Stored locally as `warehouse.db`)
+* **ORM:** Spring Data JPA (Hibernate)
+* **Documentation:** Swagger UI / OpenAPI
 
 ---
 
-## 📝 License
+## ⚙️ Setup & Installation
 
-This project is licensed under the [MIT License](LICENSE).
+### Prerequisites
+* Java Development Kit (JDK) 21 or higher.
+* Maven (Optional, as `mvnw` is included).
+
+### Steps to Run
+1.  **Clone the Repository**
+    ```bash
+    git clone [https://github.com/your-username/warehouse-backend.git](https://github.com/your-username/warehouse-backend.git)
+    cd warehouse-backend
+    ```
+
+2.  **Run the Application**
+    * **Windows:**
+        ```cmd
+        mvnw spring-boot:run
+        ```
+    * **Mac/Linux:**
+        ```bash
+        ./mvnw spring-boot:run
+        ```
+
+3.  **Access the System**
+    * **Server URL:** `http://localhost:8080`
+    * **API Docs (Swagger):** `http://localhost:8080/docs`
+
+---
+
+## 📡 API Documentation (Quick Reference)
+
+### **1. AI Scanning (Main Feature)**
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/scan` | Upload image (form-data). Returns logs & analysis. |
+| `GET` | `/api/scans` | List all scanned images history. |
+| `GET` | `/api/images/{filename}` | View the uploaded image in browser. |
+
+### **2. Analytics & Dashboard**
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/analytics/dashboard` | Main counters (Total, Rejected, Efficiency). |
+| `GET` | `/api/analytics/pie-chart-data` | Data for Status & Vendor distribution charts. |
+| `GET` | `/api/analytics/recent-activity` | Live feed of recent actions. |
+| `GET` | `/api/analytics/predict` | Future load forecast & critical inventory alerts. |
+
+### **3. Invoice Management**
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/invoices` | List all generated invoices. |
+| `GET` | `/api/invoices/search?query=...` | Search by PO Number or Vendor. |
+| `GET` | `/api/invoices/download/{id}` | Download invoice as HTML file. |
+| `DELETE` | `/api/invoices/{id}` | Delete an invoice. |
+
+---
+
+## 🌐 How to Demo (For Frontend Devs)
+
+1.  **Start the Backend:** Ensure `mvnw spring-boot:run` is running.
+2.  **Tunneling (Optional):** If you need to share the backend with a remote frontend developer, use **Ngrok**:
+    ```bash
+    ngrok http 8080
+    ```
+    *Copy the HTTPS link generated by Ngrok and use that as the Base URL.*
+
+### **Demo Flow Script**
+1.  **Open Dashboard:** Show the "Big Data" (500 records) and the "Critical Shortage" alerts.
+2.  **Scan Box:** Upload a "Damaged" image. Watch the "AI logs" appear one by one.
+3.  **Check Result:** See the status turn **RED (REJECTED)**.
+4.  **Download Invoice:** Go to the Invoice list and download the HTML bill for the rejected item.
+
+---
+
+## 📂 Project Structure
+src/main/java/com/example/warehouse/demo/ ├── Component/ │ ├── AnalyticsController.java # Dashboard & Predictions │ └── DataSeeder.java # Generates 500 fake records on startup ├── Controller/ │ ├── ScanController.java # Image Upload & AI Handling │ └── InvoiceController.java # Invoice Search & Download ├── Model/ │ ├── Scan.java # Database Table for Images │ └── Invoice.java # Database Table for Bills ├── Repo/ │ ├── ScanRepository.java # DB Access │ └── InvoiceRepository.java # DB Access ├── Service/ │ └── ScanService.java # Core Logic (AI, Files, Logic) └── DemoApplication.java # Main Entry Point
