@@ -1,5 +1,0 @@
-package com.example.warehouse.demo.Service;
-
-public class  HistoryService {
-    
-}

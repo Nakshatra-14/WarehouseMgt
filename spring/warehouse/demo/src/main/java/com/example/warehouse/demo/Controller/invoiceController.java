@@ -1,44 +1,68 @@
 package com.example.warehouse.demo.Controller;
 
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.UUID;
-
+import com.example.warehouse.demo.Model.Invoice;
+import com.example.warehouse.demo.Repo.InvoiceRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.example.warehouse.demo.Model.Invoice;
-import com.example.warehouse.demo.Repo.InvoiceRepository;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/invoices")
+@Tag(name = "2. Invoices Management", description = "Search, List, and Download Invoices")
 public class InvoiceController {
 
     @Autowired
     private InvoiceRepository invoiceRepository;
 
-    // Frontend Friend can use this to get raw JSON data
+    // --- 1. LIST ALL ---
     @GetMapping
+    @Operation(summary = "List All Invoices", description = "Get the full history of generated invoices.")
     public List<Invoice> getAllInvoices() {
         return invoiceRepository.findAll();
     }
 
-    // Professional HTML Download
+    // --- 2. SEARCH (New) ---
+    @GetMapping("/search")
+    @Operation(summary = "Search Invoices", description = "Find invoice by PO Number or Vendor Name.")
+    public List<Invoice> searchInvoices(@RequestParam("query") String query) {
+        String lowerQuery = query.toLowerCase();
+        return invoiceRepository.findAll().stream()
+                .filter(inv -> (inv.getPoNumber() != null && inv.getPoNumber().toLowerCase().contains(lowerQuery)) ||
+                               (inv.getSenderName() != null && inv.getSenderName().toLowerCase().contains(lowerQuery)))
+                .collect(Collectors.toList());
+    }
+
+    // --- 3. DELETE (New) ---
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete Invoice", description = "Permanently remove an invoice from the database.")
+    public ResponseEntity<String> deleteInvoice(@PathVariable UUID id) {
+        if (invoiceRepository.existsById(id)) {
+            invoiceRepository.deleteById(id);
+            return ResponseEntity.ok("Invoice deleted successfully.");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // --- 4. DOWNLOAD (Existing) ---
     @GetMapping("/download/{id}")
+    @Operation(summary = "Download HTML Invoice", description = "Generates a professional HTML invoice file.")
     public ResponseEntity<ByteArrayResource> downloadInvoice(@PathVariable UUID id) {
         Invoice invoice = invoiceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Invoice not found"));
 
-        String statusColor = invoice.getStatus().equals("APPROVED") ? "green" : "red";
+        String statusColor = "APPROVED".equals(invoice.getStatus()) ? "green" : "red";
 
-        // HTML Template for a Professional Invoice
         String htmlContent = "<html><body style='font-family: Arial, sans-serif; padding: 40px; border: 1px solid #ddd; max-width: 800px; margin: auto;'>" +
                 "<h1 style='text-align: center; color: #333;'>COMMERCIAL INVOICE</h1>" +
                 "<hr>" +
