@@ -20,10 +20,17 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID invoiceId;
 
-    private String poNumber; // Purchase Order Number
-    private String vendor;   // Vendor Name
-    private String status;   // Generated status
+    // --- Data "Read" from the Box Label ---
+    private String trackingNumber;
+    private String senderName;
+    private String senderAddress;
+    private String receiverName;
+    private String receiverAddress;
+    private double weightKg;
+    // -------------------------------------
 
+    private String poNumber;
+    private String status;   // "APPROVED" or "REJECTED"
     private LocalDateTime uploadedAt;
 
     @PrePersist
