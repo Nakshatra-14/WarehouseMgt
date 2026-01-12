@@ -1,42 +1,160 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* Smooth page transitions */
+.page-container {
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.page-container.fade-in {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-@keyframes logo-spin {
+.page-container.fade-out {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* Horizontal navigation scroll */
+nav::-webkit-scrollbar {
+  height: 4px;
+}
+
+nav::-webkit-scrollbar-track {
+  background: rgba(31, 41, 55, 0.5);
+  border-radius: 2px;
+}
+
+nav::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.5);
+  border-radius: 2px;
+}
+
+nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.7);
+}
+
+/* Landing page animations */
+@keyframes fade-in-up {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
+    transform: translateY(30px);
   }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+/* Smooth image loading */
+.image-fade-in {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
-.card {
-  padding: 2em;
+/* 3D Effects */
+.card-3d {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.read-the-docs {
-  color: #888;
+.card-3d:hover {
+  transform: translateY(-8px) rotateX(2deg) rotateY(-2deg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+/* Smooth hover effects with 3D */
+.smooth-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.smooth-hover:hover {
+  transform: translateY(-8px) rotateX(2deg) rotateY(-2deg) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 10px 20px rgba(99, 102, 241, 0.2), inset 0 0 20px rgba(99, 102, 241, 0.1);
+}
+
+/* 3D Button Effects */
+.btn-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.btn-3d:hover {
+  transform: translateY(-2px) rotateX(5deg);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-3d:active {
+  transform: translateY(0) rotateX(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 3D Text Effects */
+.text-3d {
+  text-shadow: 
+    2px 2px 0px rgba(0, 0, 0, 0.5),
+    4px 4px 8px rgba(0, 0, 0, 0.3),
+    0 0 10px rgba(99, 102, 241, 0.2);
+  transform: translateZ(20px);
+}
+
+/* 3D Container */
+.container-3d {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+/* Floating 3D Animation */
+@keyframes float-3d {
+  0%, 100% {
+    transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotateX(2deg) rotateY(2deg);
+  }
+}
+
+.float-3d {
+  animation: float-3d 3s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+/* Background image overlay */
+.image-overlay {
+  position: relative;
+  overflow: hidden;
+}
+
+.image-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.image-overlay > * {
+  position: relative;
+  z-index: 2;
 }
