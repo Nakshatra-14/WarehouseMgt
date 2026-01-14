@@ -2,51 +2,145 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Times New Roman Font */
+/* =========================
+   GLOBAL FONT
+========================= */
 * {
   font-family: 'Times New Roman', Times, serif;
 }
 
-/* Global smooth transitions */
+/* =========================
+   GLOBAL TRANSITIONS
+========================= */
 * {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, perspective;
+  transition-property: color, background-color, border-color, text-decoration-color,
+    fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
 
-/* Smooth scroll */
-html {
-  scroll-behavior: smooth;
-  perspective: 1000px;
+/* =========================
+   BASE LAYER OVERRIDES
+========================= */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    perspective: 1000px;
+  }
+
+  body {
+   background:red;
+  }
 }
 
-body {
-  perspective: 1000px;
-  transform-style: preserve-3d;
+/* =========================
+   HERO SECTION FIX (KEY)
+========================= */
+@layer components {
+  .hero-title {
+    @apply text-white font-bold tracking-wide;
+  }
+
+  .hero-highlight {
+    @apply text-violet-500;
+  }
+
+  .hero-subtitle {
+    @apply text-gray-300 max-w-3xl mx-auto;
+  }
 }
 
-/* Enhanced image loading */
-img {
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
+/* =========================
+   BUTTON FIXES
+========================= */
+@layer components {
+  .btn-primary {
+    @apply bg-violet-600 text-white px-6 py-3 rounded-xl shadow-lg;
+  }
+
+  .btn-primary:hover {
+    @apply bg-gray-700;
+  }
+
+  .btn-secondary {
+    @apply border border-white/60 text-white px-6 py-3 rounded-xl;
+  }
+
+  .btn-secondary:hover {
+    @apply bg-white/10;
+  }
 }
 
-/* Light mode styles */
-html.light {
-  color-scheme: light;
+/* =========================
+   IMAGE OVERLAY (READABILITY)
+========================= */
+@layer components {
+  .image-overlay {
+    position: relative;
+  }
+
+  .image-overlay::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 1;
+  }
+
+  .image-overlay > * {
+    position: relative;
+    z-index: 2;
+  }
 }
 
+/* =========================
+   DARK / LIGHT MODE
+========================= */
 html.light body {
   background-color: #f9fafb;
   color: #111827;
 }
 
-/* Dark mode styles */
-html.dark {
-  color-scheme: dark;
-}
-
 html.dark body {
   background-color: #000000;
   color: #ffffff;
+}
+/* Text click animation */
+@keyframes text-click {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.04);
+  }
+  60% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-text-click {
+  animation: text-click 0.45s ease-out;
+}
+
+/* Button click animation */
+@keyframes btn-click {
+  0% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+  }
+  50% {
+    transform: translateY(2px) scale(0.97);
+    box-shadow: 0 5px 10px rgba(99, 102, 241, 0.3);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 15px 30px rgba(99, 102, 241, 0.6);
+  }
+}
+
+.btn-click {
+  animation: btn-click 0.35s ease-out;
 }

@@ -1,102 +1,131 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from "react";
 
 export default function DamageDetection() {
-  const [imageSrc, setImageSrc] = useState(null);
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [logs, setLogs] = useState([]);
-  const [status, setStatus] = useState(null);
-  const [processing, setProcessing] = useState(false);
-  const intervalRef = useRef(null);
-
-  const steps = [
-    'Initializing pipeline...',
-    'Uploading image to AI service...',
-    'Running defect detection...',
-    'Analyzing surface anomalies...',
-    'Validating confidence thresholds...',
-    'Aggregating results...',
-    'Finalizing decision...'
-  ];
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const onFileChange = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => setImageSrc(reader.result);
-    reader.readAsDataURL(file);
+    const selected = e.target.files[0];
+    if (!selected) return;
+
+    setFile(selected);
+    setPreview(URL.createObjectURL(selected));
     setLogs([]);
-    setStatus(null);
+    setResult(null);
+    setError(null);
   };
 
-  const startProcess = () => {
-    if (!imageSrc) return;
-    setProcessing(true);
-    setLogs([]);
-    setStatus(null);
-    let i = 0;
-    intervalRef.current = setInterval(() => {
-      setLogs((prev) => [...prev, steps[i]]);
-      i++;
-      if (i >= steps.length) {
-        clearInterval(intervalRef.current);
-        // Simple simulation: if filename includes Damaged, reject, else approve
-        const isDamaged = (logs.join('') + imageSrc).toLowerCase().includes('damaged');
-        const decision = isDamaged ? 'REJECTED' : Math.random() < 0.2 ? 'REJECTED' : 'APPROVED';
-        setStatus(decision);
-        setProcessing(false);
+  const runDetection = async () => {
+    if (!file) return;
+
+    setLoading(true);
+    setError(null);
+    setLogs(["Uploading image to backend..."]);
+
+    try {
+      const formData = new FormData();
+      formData.append("image", file); // MUST be "image"
+
+      const res = await fetch("http://localhost:8080/api/scan", {
+        method: "POST",
+        body: formData
+      });
+
+      if (!res.ok) {
+        throw new Error("Backend error");
       }
-    }, 700);
+
+      const data = await res.json();
+
+      setLogs(data.process_logs || []);
+      setResult(data.scan_data);
+    } catch (err) {
+      console.error(err);
+      setError("❌ Error connecting to backend");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 p-4 rounded-xl border border-gray-800 bg-gray-900">
-          <h2 className="text-white font-semibold">Upload & Preview</h2>
-          <div className="mt-3 flex items-center gap-3">
-            <label className="px-3 py-2 rounded-lg bg-indigo-600 text-white text-sm cursor-pointer hover:bg-indigo-500">
-              <input type="file" accept="image/*" className="hidden" onChange={onFileChange} />
-              Choose Image
-            </label>
-            <button
-              onClick={startProcess}
-              disabled={!imageSrc || processing}
-              className={`px-3 py-2 rounded-lg text-sm font-medium ${processing ? 'bg-gray-700 text-gray-400' : 'bg-green-600 text-white hover:bg-green-500'}`}
-            >
-              {processing ? 'Processing...' : 'Run AI Detection'}
-            </button>
+    <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      {/* LEFT */}
+      <div className="lg:col-span-2 bg-gray-900 border border-gray-800 rounded-xl p-4">
+        <h2 className="text-white font-semibold mb-3">Upload & Preview</h2>
+
+        <div className="flex gap-3 mb-4">
+          <label className="px-4 py-2 bg-indigo-600 text-white rounded cursor-pointer">
+            Choose Image
+            <input type="file" accept="image/*" hidden onChange={onFileChange} />
+          </label>
+
+          <button
+            onClick={runDetection}
+            disabled={loading || !file}
+            className={`px-4 py-2 rounded text-white ${
+              loading ? "bg-gray-600" : "bg-green-600 hover:bg-green-500"
+            }`}
+          >
+            {loading ? "Processing..." : "Run AI Detection"}
+          </button>
+        </div>
+
+        {/* Preview */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-black/40 border border-gray-800 rounded-xl h-64 flex items-center justify-center">
+            {preview ? (
+              <img src={preview} alt="preview" className="max-h-60 object-contain" />
+            ) : (
+              <span className="text-gray-500 text-sm">No image selected</span>
+            )}
           </div>
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="rounded-xl overflow-hidden border border-gray-800 bg-black/40 h-64 grid place-items-center relative">
-              {imageSrc ? (
-                <img src={imageSrc} alt="preview" className="max-h-64 object-contain image-fade-in" />
-              ) : (
-                <div className="text-gray-500 text-sm">No image selected</div>
-              )}
-            </div>
-            <div className="rounded-xl border border-gray-800 bg-gray-950 p-3">
-              <div className="text-white font-semibold">Processing Logs</div>
-              <div className="mt-2 h-48 overflow-auto text-xs text-gray-300 space-y-1">
-                {logs.map((l, idx) => (
-                  <div key={idx} className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-                    <span>{l}</span>
-                  </div>
-                ))}
-              </div>
+
+          {/* Logs */}
+          <div className="bg-gray-950 border border-gray-800 rounded-xl p-3">
+            <h3 className="text-white font-semibold mb-2">Processing Logs</h3>
+            <div className="text-xs text-gray-300 space-y-1 h-52 overflow-auto">
+              {logs.map((log, i) => (
+                <div key={i}>• {log}</div>
+              ))}
             </div>
           </div>
         </div>
 
-        <div className="p-4 rounded-xl border border-gray-800 bg-gray-900">
-          <h2 className="text-white font-semibold">Result</h2>
-          <div className="mt-3 h-48 grid place-items-center">
-            {status ? (
-              <div className={`text-2xl font-bold ${status === 'APPROVED' ? 'text-emerald-400' : 'text-red-400'}`}>{status}</div>
-            ) : (
-              <div className="text-gray-500 text-sm">Awaiting analysis...</div>
-            )}
+        {error && <div className="text-red-400 mt-3">{error}</div>}
+      </div>
+
+      {/* RIGHT */}
+      <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+        <h2 className="text-white font-semibold mb-3">Result</h2>
+
+        {result ? (
+          <div className="space-y-3">
+            <div
+              className={`text-2xl font-bold ${
+                result.status === "damaged"
+                  ? "text-red-400"
+                  : "text-emerald-400"
+              }`}
+            >
+              {result.status.toUpperCase()}
+            </div>
+
+            <div className="text-gray-300 text-sm">
+              Confidence: {result.confidence}%
+            </div>
+
+            <div className="text-gray-400 text-xs">
+              Scan ID: {result.scanId}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="text-gray-500 text-sm">Awaiting analysis...</div>
+        )}
       </div>
     </div>
   );
